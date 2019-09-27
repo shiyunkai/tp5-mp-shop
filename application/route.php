@@ -39,4 +39,8 @@ Route::post('api/:version/token/user','api/:version.Token/getToken');
 
 Route::post('api/:version/address','api/:version.Address/createOrUpdateAddress');
 
+// 下单
+Route::post('api/:version/order','api/:version.Order/placeOrder');
+
+
 
