@@ -8,6 +8,8 @@ use app\api\model\OrderProduct;
 use app\api\model\Product;
 use app\api\model\UserAddress;
 use app\lib\exception\UserException;
+use think\Db;
+use think\Exception;
 
 class Order
 {
@@ -58,7 +60,7 @@ class Order
                 // 只要有一个商品检测不通过就为false
                 $status['pass'] = false;
             }
-            $status['orderPricep'] += $pStatus['totalPrice'];
+            $status['orderPrice'] += $pStatus['totalPrice'];
             $status['totalCount'] += $pStatus['count'];
             array_push($status['pStatusArray'], $status);
         }
@@ -166,6 +168,7 @@ class Order
     // 创建订单
     private function createOrder($snap)
     {
+        Db::startTrans();
         try{
             $orderNo = $this->makeOrderNo();
             $order = new \app\api\model\Order();
@@ -187,7 +190,7 @@ class Order
 
             $orderProduct = new OrderProduct();
             $orderProduct->saveAll($this->oProducts);
-
+            Db::commit();
             return [
                 'order_no' =>$orderNo,
                 'order_id' => $orderID,
@@ -195,6 +198,7 @@ class Order
             ];
 
         }catch (\Exception $e){
+            Db::rollback();
             throw $e;
         }
     }
@@ -203,12 +207,25 @@ class Order
     public static function makeOrderNo(){
         $yCode = array('A','B','C','D','E','F','G','H','I','J');
         $orderSn =
-            $yCode[intval(data('Y')) - 2017]
-            . strtoupper(dechex(data('m')))
+            $yCode[intval(date('Y')) - 2017]
+            . strtoupper(dechex(date('m')))
             . date('d')
             . substr(time() , -5)
             . substr(microtime(),2,5)
             .sprintf('%02d',rand(0, 99));
         return $orderSn;
+    }
+
+    // 提供一个对外访问的检测订单库存量函数
+    public function checkOrderStock($orderID){
+        // 订单商品
+        $oProducts = OrderProduct::where('order_id', '=', $orderID)
+            ->select();
+        $this->oProducts = $oProducts;
+        // 真实商品
+        $this->products = $this->getProductByOrder($oProducts);
+
+        $status = $this->getOrderStatus();
+        return $status;
     }
 }

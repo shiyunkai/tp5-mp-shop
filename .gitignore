@@ -2,3 +2,7 @@
 composer.lock
 *.log
 thinkphp
+
+runtime
+log
+.idea

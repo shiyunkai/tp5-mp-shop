@@ -19,9 +19,8 @@ Route::get('api/:version/theme','api/:version.Theme/getSimpleList');
 Route::get('api/:version/theme/:id','api/:version.Theme/getComplexOne');
 
 // 限定id为正整数
-//Route::get('api/:version/product/:id','api/:version.Product/getOne',[],['id'=>'\d+']);
+Route::get('api/:version/product/:id','api/:version.Product/getOne',[],['id'=>'\d+']);
 Route::get('api/:version/product/recent','api/:version.Product/getRecent');
-Route::get('api/:version/product/:id','api/:version.Product/getOne');
 
 Route::get('api/:version/product/by_category','api/:version.Product/getAllInCategory');
 
@@ -41,6 +40,16 @@ Route::post('api/:version/address','api/:version.Address/createOrUpdateAddress')
 
 // 下单
 Route::post('api/:version/order','api/:version.Order/placeOrder');
+// 用户历史订单
+Route::get('api/:version/order/by_user','api/:version.Order/getSummaryByUser');
+// 订单详情
+Route::get('api/:version/order/:id','api/:version.Order/getDetail', [], ['id'=>'\d+']);
+
+// 支付预订单
+Route::post('api/:version/pay/pre_order','api/:version.Pay/getPreOrder');
+
+// 微信回调
+Route::post('api/:version/pay/notify','api/:version.Pay/receiveNotify');
 
 
 

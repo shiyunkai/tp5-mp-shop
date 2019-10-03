@@ -15,7 +15,7 @@
 define('APP_PATH', __DIR__ . '/../application/');
 
 // 自定义日志目录
-define('LOG_PATH',__DIR__,'/../log/');
+//define('LOG_PATH',__DIR__,'/../log/');
 
 
 // 加载框架引导文件
