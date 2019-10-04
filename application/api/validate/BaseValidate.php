@@ -42,6 +42,17 @@ class BaseValidate extends Validate
         }
     }
 
+    protected function isMobile($value, $rule='', $data='',$field=''){
+        if (!is_numeric($value)) {
+            return false;
+        }
+        $mobile_preg_expresion = '#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#';
+        if(!preg_match($mobile_preg_expresion, $value)){
+            return false;
+        }
+        return true;
+    }
+
     public function getDataByRule($arrays){
         if (array_key_exists('user_id', $arrays) |
         array_key_exists('uid', $arrays)){
@@ -55,8 +66,10 @@ class BaseValidate extends Validate
 
         $newArray = [];
         foreach ($this->rule as $key => $value){
-            $newArray = $arrays[$key];
+            $newArray[$key] = $arrays[$key];
         }
         return $newArray;
     }
+
+
 }
