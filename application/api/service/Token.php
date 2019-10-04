@@ -95,5 +95,14 @@ class Token
         }
     }
 
+    public static function verifyToken($token){
+        $exists = Cache::get($token);
+        if($exists){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
 }
