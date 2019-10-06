@@ -6,6 +6,7 @@ namespace app\api\service;
 
 use app\lib\enum\OrderStatusEnum;
 use app\lib\exception\OrderException;
+use app\lib\exception\PayException;
 use app\lib\exception\TokenException;
 use think\Config;
 use think\Exception;
@@ -73,6 +74,9 @@ class Pay
         if($wxOrder['return_code'] != 'SUCCESS' || $wxOrder['result_code'] != 'SUCCESS'){
             Log::record($wxOrder, 'error');
             Log::record('获取预支付订单失败','error');
+            throw new PayException([
+                'msg'=>'获取预支付订单失败'
+            ]);
         }
         // 保存prepay_id，用于向用户发发送模板消息
         $this->recordPreOrder($wxOrder);
